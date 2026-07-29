@@ -20,8 +20,6 @@ import PaymentModal from "@/components/tenant/PaymentModal";
 import TicketForm from "@/components/tenant/TicketForm";
 import ProfileCard from "@/components/tenant/ProfileCard";
 import PaymentStatus from "@/components/tenant/PaymentStatus";
-import MealPlanner from "@/components/tenant/MealPlanner";
-import WiFiViewer from "@/components/tenant/WiFiViewer";
 
 const TICKET_STATUS_TONE = {
   Open: "amber",
@@ -87,10 +85,68 @@ export default function TenantPortal() {
         </div>
       </div>
 
-      {/* Amenities Grid */}
-      <div className="grid gap-6 mb-8 sm:grid-cols-2">
-        <MealPlanner />
-        <WiFiViewer />
+      {/* Resident Details & Documents */}
+      <div className="grid gap-6 mb-8 md:grid-cols-2">
+        {/* Resident Details */}
+        <Card className="p-6">
+          <h3 className="mb-4 font-semibold text-slate-900 dark:text-white">Resident Details</h3>
+          <dl className="space-y-3 text-sm">
+            <div className="flex justify-between">
+              <dt className="text-slate-600 dark:text-slate-400">Occupation</dt>
+              <dd className="font-medium text-slate-900 dark:text-white">{tenant.occupationType || "Not specified"}</dd>
+            </div>
+            <div className="flex justify-between">
+              <dt className="text-slate-600 dark:text-slate-400">{tenant.occupationType === "Working Professional" ? "Employer" : "College/University"}</dt>
+              <dd className="font-medium text-slate-900 dark:text-white">{tenant.employerName || tenant.collegeUniversity || "-"}</dd>
+            </div>
+            <div className="flex justify-between">
+              <dt className="text-slate-600 dark:text-slate-400">Move-In Date</dt>
+              <dd className="font-medium text-slate-900 dark:text-white">
+                {tenant.moveInDate ? new Date(tenant.moveInDate).toLocaleDateString("en-IN") : "-"}
+              </dd>
+            </div>
+            <div className="flex justify-between">
+              <dt className="text-slate-600 dark:text-slate-400">Lease Ends</dt>
+              <dd className="font-medium text-slate-900 dark:text-white">
+                {new Date(tenant.leaseEnd).toLocaleDateString("en-IN")}
+              </dd>
+            </div>
+          </dl>
+        </Card>
+
+        {/* Documents */}
+        <Card className="p-6">
+          <h3 className="mb-4 font-semibold text-slate-900 dark:text-white">Documents</h3>
+          <div className="space-y-3">
+            <button className="flex w-full items-center gap-3 rounded-lg border border-slate-200 p-3 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800/50 transition">
+              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100 text-orange-600 dark:bg-orange-500/10 dark:text-orange-400">
+                <ReceiptText size={16} />
+              </span>
+              <div className="text-left">
+                <p className="text-sm font-medium text-slate-900 dark:text-white">Rental Agreement</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{tenant.leaseAgreementUploaded ? "Uploaded" : "Not uploaded"}</p>
+              </div>
+            </button>
+            <button className="flex w-full items-center gap-3 rounded-lg border border-slate-200 p-3 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800/50 transition">
+              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
+                <ReceiptText size={16} />
+              </span>
+              <div className="text-left">
+                <p className="text-sm font-medium text-slate-900 dark:text-white">Rent Receipts</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">View monthly receipts</p>
+              </div>
+            </button>
+          </div>
+        </Card>
+      </div>
+
+      {/* Refer a Friend Banner */}
+      <div className="mb-8 rounded-lg bg-gradient-to-r from-rose-900 to-amber-700 p-6 text-white">
+        <h3 className="mb-2 text-lg font-semibold">Refer a Friend & Earn 3 Months Free Maintenance</h3>
+        <p className="mb-4 text-sm text-amber-50">Know someone looking for premium co-living? Share your referral link and get rewarded.</p>
+        <button className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-rose-900 hover:bg-slate-100 transition">
+          Generate Referral Link
+        </button>
       </div>
 
       {/* Maintenance Desk */}

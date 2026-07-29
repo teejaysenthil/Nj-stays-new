@@ -18,6 +18,8 @@ export interface Property {
   amenities: string[];
   gradient: string;
   status: "live" | "coming_soon";
+  totalFloors?: number;
+  buildingType?: "co-living" | "pg";
 }
 
 export interface Unit {
@@ -28,6 +30,10 @@ export interface Unit {
   status: UnitStatus;
   tenantId?: string;
   rent: number;
+  apartmentType?: "1BHK" | "1RK" | "Studio" | "2BHK";
+  hasBalcony?: boolean;
+  securityDeposit?: number;
+  furnishingType?: "Fully Furnished" | "Semi-Furnished" | "Unfurnished";
 }
 
 export type DepositStatus = "paid" | "pending" | "partial";
@@ -52,6 +58,11 @@ export interface Tenant {
   idProofType: string;
   idProofUploaded: boolean;
   leaseAgreementUploaded: boolean;
+  occupationType?: "Working Professional" | "Student";
+  employerName?: string;
+  collegeUniversity?: string;
+  moveInDate?: string;
+  moveOutDate?: string;
 }
 
 export type TicketCategory =
