@@ -99,9 +99,13 @@ export default function GuestLanding() {
           subtitle="Our flagship building, loved by long-term residents"
         />
         <Card className="overflow-hidden">
-          <div
-            className={`h-32 w-full bg-gradient-to-r ${felix64.gradient} sm:h-40`}
-          />
+          <div className="relative h-48 w-full overflow-hidden bg-slate-200 sm:h-64">
+            <img
+              src="https://images.unsplash.com/photo-1512917774080-9b274b3b313b?auto=format&fit=crop&w=800&q=80"
+              alt="Felix 64 - Luxury co-living apartments"
+              className="h-full w-full object-cover"
+            />
+          </div>
           <div className="p-5 sm:p-8">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>

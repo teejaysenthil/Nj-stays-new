@@ -52,10 +52,15 @@ export default function HeroSearch({
   return (
     <>
       {/* Main Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-rose-950 via-red-900 to-amber-700">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0 bg-grid-pattern" />
-        </div>
+      <section className="relative overflow-hidden">
+        {/* Background Image */}
+        <img
+          src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80"
+          alt="Luxury apartment building"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 to-red-950/80" />
 
         <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
           <div className="mx-auto max-w-2xl text-center">
@@ -67,8 +72,7 @@ export default function HeroSearch({
             </p>
 
             {/* Search Bar */}
-            <div className="mx-auto mt-8 max-w-3xl">
-              <div className="rounded-2xl bg-white shadow-2xl p-2 sm:p-3">
+            <div className="relative z-10 my-8 mx-auto max-w-5xl rounded-2xl bg-white shadow-xl p-6">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
                   {/* City Filter */}
                   <div className="flex-1 flex flex-col gap-1">
@@ -82,7 +86,7 @@ export default function HeroSearch({
                       }
                       className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 focus:border-rose-900 focus:ring-2 focus:ring-rose-900/20 focus:outline-none"
                     >
-                      <option value="">All Cities</option>
+                      <option value="">All Locations</option>
                       {CITIES.map((city) => (
                         <option key={city} value={city}>
                           {city}
@@ -104,11 +108,10 @@ export default function HeroSearch({
                       className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 focus:border-rose-900 focus:ring-2 focus:ring-rose-900/20 focus:outline-none"
                     >
                       <option value="">All Types</option>
-                      {APARTMENT_TYPES.map((type) => (
-                        <option key={type} value={type}>
-                          {type}
-                        </option>
-                      ))}
+                      <option value="1 BHK">1 BHK</option>
+                      <option value="1 RK">1 RK</option>
+                      <option value="Studio">Studio</option>
+                      <option value="2 BHK">2 BHK</option>
                     </select>
                   </div>
 
@@ -141,20 +144,19 @@ export default function HeroSearch({
                     <Search size={16} /> Search
                   </button>
                 </div>
-              </div>
+            </div>
 
-              {/* Hero CTA Buttons */}
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                <GradientButton onClick={handleSearch}>
-                  Explore Properties
-                </GradientButton>
-                <button
-                  onClick={onScheduleVisit}
-                  className="rounded-full border-2 border-white bg-transparent px-6 py-3 text-sm font-semibold text-white hover:bg-white/10 transition"
-                >
-                  Schedule a Visit
-                </button>
-              </div>
+            {/* Hero CTA Buttons */}
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+              <GradientButton onClick={handleSearch}>
+                Explore Properties
+              </GradientButton>
+              <button
+                onClick={onScheduleVisit}
+                className="rounded-full border-2 border-white bg-transparent px-6 py-3 text-sm font-semibold text-white hover:bg-white/10 transition"
+              >
+                Schedule a Visit
+              </button>
             </div>
           </div>
         </div>
@@ -173,7 +175,7 @@ export default function HeroSearch({
                   }
                   className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-rose-900 focus:outline-none"
                 >
-                  <option value="">All Cities</option>
+                  <option value="">All Locations</option>
                   {CITIES.map((city) => (
                     <option key={city} value={city}>
                       {city}
@@ -190,11 +192,10 @@ export default function HeroSearch({
                   className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-rose-900 focus:outline-none"
                 >
                   <option value="">All Types</option>
-                  {APARTMENT_TYPES.map((type) => (
-                    <option key={type} value={type}>
-                      {type}
-                    </option>
-                  ))}
+                  <option value="1 BHK">1 BHK</option>
+                  <option value="1 RK">1 RK</option>
+                  <option value="Studio">Studio</option>
+                  <option value="2 BHK">2 BHK</option>
                 </select>
               </div>
               <div className="flex-1">
