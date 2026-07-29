@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   BadgeCheck,
   Bike,
@@ -44,12 +44,20 @@ export default function GuestLanding() {
   const [modalKey, setModalKey] = useState(0);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [filterOpen, setFilterOpen] = useState(false);
+  const [isLargeScreen, setIsLargeScreen] = useState(true);
   const [filters, setFilters] = useState<Filters>({
     budget: [10000, 50000],
     sharing: [],
     meals: false,
     amenities: [],
   });
+
+  useEffect(() => {
+    setIsLargeScreen(window.innerWidth >= 768);
+    const handleResize = () => setIsLargeScreen(window.innerWidth >= 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const felix64 = properties.find((p) => p.id === "felix-64")!;
 
@@ -217,7 +225,7 @@ export default function GuestLanding() {
             <FilterSidebar
               filters={filters}
               onFilterChange={setFilters}
-              isOpen={filterOpen || window?.innerWidth >= 768}
+              isOpen={filterOpen || isLargeScreen}
               onClose={() => setFilterOpen(false)}
             />
           </div>
