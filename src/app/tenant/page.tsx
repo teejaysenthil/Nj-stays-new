@@ -41,7 +41,7 @@ export default function TenantPortal() {
 
   const tenant = tenants.find((t) => t.id === currentTenantId) ?? tenants[0];
   const property = properties.find((p) => p.id === tenant.propertyId)!;
-  const unitNumber = tenant.unitId.split("-").pop() || "";
+  const unitNumber: string = tenant.unitId.split("-").pop() || "";
 
   const myTickets = useMemo(
     () => tickets.filter((t) => t.tenantId === tenant.id),
