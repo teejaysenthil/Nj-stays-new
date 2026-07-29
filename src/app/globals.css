@@ -3,18 +3,30 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #fafaf9;
+  --foreground: #1c1917;
+  --primary: #7f1d1d;
+  --primary-light: #991b1b;
+  --accent: #f59e0b;
+  --accent-light: #fbbf24;
 }
 
 .dark {
-  --background: #0b1120;
-  --foreground: #e2e8f0;
+  --background: #09090b;
+  --foreground: #fafaf9;
+  --primary: #7f1d1d;
+  --primary-light: #991b1b;
+  --accent: #f59e0b;
+  --accent-light: #fbbf24;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: #7f1d1d;
+  --color-primary-light: #991b1b;
+  --color-accent: #f59e0b;
+  --color-accent-light: #fbbf24;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -42,4 +54,17 @@ body {
 
 .animate-fade-in {
   animation: fade-in 0.2s ease-out;
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient-shift {
+  animation: gradient-shift 3s ease infinite;
 }

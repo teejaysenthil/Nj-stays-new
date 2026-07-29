@@ -4,6 +4,7 @@ import "./globals.css";
 import { AppProvider } from "@/lib/store";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import PortalSwitcher from "@/components/PortalSwitcher";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,6 +36,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
         <AppProvider>
           <Navbar />
+          <PortalSwitcher />
           <main className="flex-1">{children}</main>
           <Footer />
         </AppProvider>

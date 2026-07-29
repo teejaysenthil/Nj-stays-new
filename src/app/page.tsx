@@ -16,12 +16,16 @@ import {
   Star,
   Wifi,
   Zap,
+  Menu,
 } from "lucide-react";
 import { REVIEWS } from "@/lib/data";
 import { useApp } from "@/lib/store";
-import { Badge, Card, SectionHeading } from "@/components/ui";
+import { Badge, Card, SectionHeading, GradientButton } from "@/components/ui";
 import InquiryModal from "@/components/guest/InquiryModal";
 import PropertyGallery from "@/components/guest/PropertyGallery";
+import HeroSearch, { SearchFilters } from "@/components/guest/HeroSearch";
+import FilterSidebar, { Filters } from "@/components/guest/FilterSidebar";
+import CallbackWidget from "@/components/guest/CallbackWidget";
 
 const AMENITY_ICONS: Record<string, typeof Wifi> = {
   "High-speed Wi-Fi": Wifi,
@@ -34,24 +38,22 @@ const AMENITY_ICONS: Record<string, typeof Wifi> = {
 
 export default function GuestLanding() {
   const { properties } = useApp();
-  const [query, setQuery] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState<"visit" | "callback">("visit");
   const [modalPropertyIds, setModalPropertyIds] = useState<string[]>(["felix-64"]);
   const [modalKey, setModalKey] = useState(0);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [filters, setFilters] = useState<Filters>({
+    budget: [10000, 50000],
+    sharing: [],
+    meals: false,
+    amenities: [],
+  });
 
   const felix64 = properties.find((p) => p.id === "felix-64")!;
 
-  const q = query.trim().toLowerCase();
-  const filteredProperties = !q
-    ? properties
-    : properties.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.address.toLowerCase().includes(q) ||
-          p.city.toLowerCase().includes(q)
-      );
+  const filteredProperties = properties;
 
   function openModal(type: "visit" | "callback", propertyIds = ["felix-64"]) {
     setModalType(type);
@@ -70,56 +72,17 @@ export default function GuestLanding() {
     document.getElementById("properties")?.scrollIntoView({ behavior: "smooth" });
   }
 
+  const handleSearch = (searchFilters: SearchFilters) => {
+    scrollToProperties();
+  };
+
   return (
     <div className="animate-fade-in">
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-orange-50 via-white to-white dark:from-slate-900 dark:via-slate-950 dark:to-slate-950">
-        <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
-          <div className="mx-auto max-w-2xl text-center">
-            <Badge tone="amber" className="mb-4">
-              <Sparkles size={12} /> Trusted by 100+ happy residents
-            </Badge>
-            <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
-              Premium Fully Furnished Stays in Bengaluru
-            </h1>
-            <p className="mx-auto mt-4 max-w-xl text-base text-slate-600 dark:text-slate-400 sm:text-lg">
-              Move-in ready 1BHK apartments across the NJ Stays property
-              family — starting with Felix 64 in BTM 1st Stage.
-            </p>
-
-            <div className="mx-auto mt-7 flex max-w-lg items-center gap-2 rounded-full border border-slate-200 bg-white p-1.5 pl-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-              <Search size={18} className="shrink-0 text-slate-400" />
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search by locality or property name…"
-                className="w-full bg-transparent text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none dark:text-white"
-              />
-              <button
-                onClick={scrollToProperties}
-                className="shrink-0 rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white dark:bg-white dark:text-slate-900"
-              >
-                Search
-              </button>
-            </div>
-
-            <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-              <button
-                onClick={scrollToProperties}
-                className="rounded-full bg-gradient-to-r from-orange-500 to-pink-600 px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:opacity-90"
-              >
-                Explore Properties
-              </button>
-              <button
-                onClick={() => openModal("visit")}
-                className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:hover:bg-slate-800"
-              >
-                Schedule a Visit
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Hero Search */}
+      <HeroSearch
+        onSearch={handleSearch}
+        onScheduleVisit={() => openModal("visit")}
+      />
 
       {/* Featured Property */}
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
@@ -229,85 +192,109 @@ export default function GuestLanding() {
         </div>
       </section>
 
-      {/* Property Directory */}
-      <section id="properties" className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-        <SectionHeading
-          title="NJ Stays Property Directory"
-          subtitle="Every building in the NJ Stays family — tick the ones you're interested in to enquire about several at once"
-        />
-        <div className="grid gap-5 sm:grid-cols-2">
-          {filteredProperties.map((property) => {
-            const isSelected = selectedIds.includes(property.id);
-            return (
-              <Card
-                key={property.id}
-                className={`overflow-hidden transition ${
-                  isSelected ? "ring-2 ring-orange-500" : ""
-                }`}
-              >
-                <div className={`h-24 w-full bg-gradient-to-r ${property.gradient}`} />
-                <div className="p-5">
-                  <div className="flex items-start justify-between gap-2">
-                    <button
-                      onClick={() => toggleSelected(property.id)}
-                      className="flex items-start gap-2 text-left"
-                    >
-                      {isSelected ? (
-                        <CheckSquare size={20} className="mt-0.5 shrink-0 text-orange-600" />
-                      ) : (
-                        <Square size={20} className="mt-0.5 shrink-0 text-slate-300 dark:text-slate-600" />
+      {/* Property Directory with Filters */}
+      <section id="properties" className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
+              Available Properties
+            </h2>
+            <p className="mt-1 text-slate-600 dark:text-slate-400">
+              Select properties to compare and enquire about multiple options
+            </p>
+          </div>
+          <button
+            onClick={() => setFilterOpen(!filterOpen)}
+            className="md:hidden flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+          >
+            <Menu size={18} /> Filters
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+          {/* Sidebar */}
+          <div className="md:col-span-1">
+            <FilterSidebar
+              filters={filters}
+              onFilterChange={setFilters}
+              isOpen={filterOpen || window?.innerWidth >= 768}
+              onClose={() => setFilterOpen(false)}
+            />
+          </div>
+
+          {/* Properties Grid */}
+          <div className="md:col-span-3">
+            <div className="grid gap-5 sm:grid-cols-2">
+              {filteredProperties.map((property) => {
+                const isSelected = selectedIds.includes(property.id);
+                return (
+                  <Card
+                    key={property.id}
+                    className={`overflow-hidden transition ${
+                      isSelected ? "ring-2 ring-rose-900" : ""
+                    }`}
+                  >
+                    <div className={`h-24 w-full bg-gradient-to-r ${property.gradient}`} />
+                    <div className="p-5">
+                      <div className="flex items-start justify-between gap-2 mb-3">
+                        <button
+                          onClick={() => toggleSelected(property.id)}
+                          className="flex items-start gap-2 text-left flex-1"
+                        >
+                          {isSelected ? (
+                            <CheckSquare size={20} className="mt-0.5 shrink-0 text-rose-900" />
+                          ) : (
+                            <Square size={20} className="mt-0.5 shrink-0 text-slate-300 dark:text-slate-600" />
+                          )}
+                          <span className="flex items-center gap-2 flex-1">
+                            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
+                              <Building2 size={16} className="text-slate-600 dark:text-slate-300" />
+                            </span>
+                            <span className="flex-1">
+                              <span className="block font-semibold text-slate-900 dark:text-white text-sm">
+                                {property.name}
+                              </span>
+                              <span className="block text-xs text-slate-500 dark:text-slate-400">
+                                {property.unitType} · {property.totalUnits} units
+                              </span>
+                            </span>
+                          </span>
+                        </button>
+                      </div>
+                      <Badge tone={property.status === "live" ? "green" : "blue"} className="mb-2">
+                        {property.status === "live" ? "Live" : "Opening Soon"}
+                      </Badge>
+                      <p className="text-xs flex items-start gap-1.5 text-slate-600 dark:text-slate-400 mb-2">
+                        <MapPin size={12} className="mt-0.5 shrink-0" />
+                        {property.address}, {property.city}
+                      </p>
+                      {property.rating > 0 && (
+                        <p className="text-xs flex items-center gap-1 font-medium text-slate-700 dark:text-slate-300 mb-3">
+                          <Star size={12} className="fill-current text-amber-400" />
+                          {property.rating} ({property.reviewCount} reviews)
+                        </p>
                       )}
-                      <span className="flex items-center gap-2">
-                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
-                          <Building2 size={16} className="text-slate-600 dark:text-slate-300" />
-                        </span>
-                        <span>
-                          <span className="block font-semibold text-slate-900 dark:text-white">
-                            {property.name}
-                          </span>
-                          <span className="block text-xs text-slate-500 dark:text-slate-400">
-                            {property.unitType} · {property.totalUnits} units
-                          </span>
-                        </span>
-                      </span>
-                    </button>
-                    <Badge tone={property.status === "live" ? "green" : "blue"}>
-                      {property.status === "live" ? "Live" : "Opening Soon"}
-                    </Badge>
-                  </div>
-                  <p className="mt-3 flex items-start gap-1.5 text-sm text-slate-600 dark:text-slate-400">
-                    <MapPin size={14} className="mt-0.5 shrink-0" />
-                    {property.address}, {property.city}
-                  </p>
-                  {property.rating > 0 && (
-                    <p className="mt-1.5 flex items-center gap-1 text-sm font-medium text-slate-700 dark:text-slate-300">
-                      <Star size={13} className="fill-current text-amber-400" />
-                      {property.rating} ({property.reviewCount} reviews)
-                    </p>
-                  )}
 
-                  <div className="mt-4">
-                    <PropertyGallery propertyName={property.name} variant="compact" />
-                  </div>
-
-                  <div className="mt-4 flex gap-2">
-                    <button
-                      onClick={() => openModal("visit", [property.id])}
-                      className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900"
-                    >
-                      <CalendarClock size={13} /> Schedule Visit
-                    </button>
-                    <button
-                      onClick={() => openModal("callback", [property.id])}
-                      className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
-                    >
-                      <PhoneCall size={13} /> Enquire
-                    </button>
-                  </div>
-                </div>
-              </Card>
-            );
-          })}
+                      <div className="mt-4 flex gap-2">
+                        <button
+                          onClick={() => openModal("visit", [property.id])}
+                          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-rose-900 px-3 py-2 text-xs font-semibold text-white hover:bg-rose-800 dark:hover:opacity-90 transition"
+                        >
+                          <CalendarClock size={13} /> Schedule Visit
+                        </button>
+                        <button
+                          onClick={() => openModal("callback", [property.id])}
+                          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-rose-900 px-3 py-2 text-xs font-semibold text-rose-900 hover:bg-rose-50 dark:border-amber-400 dark:text-amber-400 dark:hover:bg-slate-800 transition"
+                        >
+                          <PhoneCall size={13} /> Enquire
+                        </button>
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -318,12 +305,14 @@ export default function GuestLanding() {
           </span>
           <button
             onClick={() => openModal("visit", selectedIds)}
-            className="rounded-full bg-gradient-to-r from-orange-500 to-pink-600 px-4 py-1.5 text-xs font-semibold text-white shadow-sm hover:opacity-90"
+            className="rounded-full bg-gradient-to-r from-rose-900 to-amber-700 px-4 py-1.5 text-xs font-semibold text-white shadow-sm hover:opacity-90"
           >
             Enquire about selected
           </button>
         </div>
       )}
+
+      <CallbackWidget />
 
       <InquiryModal
         key={modalKey}
