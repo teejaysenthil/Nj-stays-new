@@ -62,14 +62,14 @@ export default function AmenityManager() {
               {categoryAmenities.map((amenity) => {
                 const Icon = amenity.icon;
                 return (
-                  <Card
+                  <button
                     key={amenity.id}
-                    className={`p-4 cursor-pointer transition ${
-                      amenity.enabled
-                        ? "ring-2 ring-rose-900 dark:ring-amber-400"
-                        : ""
-                    }`}
                     onClick={() => handleToggle(amenity.id)}
+                    className={`rounded-lg border bg-white p-4 cursor-pointer transition text-left dark:bg-slate-900 ${
+                      amenity.enabled
+                        ? "ring-2 ring-rose-900 border-rose-900 dark:ring-amber-400 dark:border-amber-400"
+                        : "border-slate-200 dark:border-slate-700"
+                    }`}
                   >
                     <div className="flex items-start justify-between gap-2 mb-3">
                       <div className={`flex h-10 w-10 items-center justify-center rounded-lg transition ${
@@ -98,7 +98,7 @@ export default function AmenityManager() {
                     >
                       {amenity.enabled ? "Enabled" : "Disabled"}
                     </Badge>
-                  </Card>
+                  </button>
                 );
               })}
             </div>
