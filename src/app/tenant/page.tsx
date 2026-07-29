@@ -18,6 +18,10 @@ import { useApp } from "@/lib/store";
 import { Badge, Card, SectionHeading } from "@/components/ui";
 import PaymentModal from "@/components/tenant/PaymentModal";
 import TicketForm from "@/components/tenant/TicketForm";
+import ProfileCard from "@/components/tenant/ProfileCard";
+import PaymentStatus from "@/components/tenant/PaymentStatus";
+import MealPlanner from "@/components/tenant/MealPlanner";
+import WiFiViewer from "@/components/tenant/WiFiViewer";
 
 const TICKET_STATUS_TONE = {
   Open: "amber",
@@ -53,14 +57,15 @@ export default function TenantPortal() {
   );
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+      {/* Header */}
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
             Welcome back, {tenant.name.split(" ")[0]}
           </h1>
-          <p className="mt-1 flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
-            <Building2 size={14} /> {property.name} · Unit #{unitNumber}
+          <p className="mt-1 text-slate-600 dark:text-slate-400">
+            Your resident dashboard
           </p>
         </div>
         <Badge tone="green">
@@ -68,109 +73,24 @@ export default function TenantPortal() {
         </Badge>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        {/* Lease Details */}
-        <Card className="p-5">
-          <h3 className="mb-4 font-semibold text-slate-900 dark:text-white">
-            Current Lease Details
-          </h3>
-          <dl className="space-y-3 text-sm">
-            <div className="flex items-center justify-between">
-              <dt className="text-slate-500 dark:text-slate-400">Unit Number</dt>
-              <dd className="font-medium text-slate-900 dark:text-white">
-                #{unitNumber}
-              </dd>
-            </div>
-            <div className="flex items-center justify-between">
-              <dt className="text-slate-500 dark:text-slate-400">Monthly Rent</dt>
-              <dd className="font-medium text-slate-900 dark:text-white">
-                ₹{tenant.rentAmount.toLocaleString("en-IN")}
-              </dd>
-            </div>
-            <div className="flex items-center justify-between">
-              <dt className="text-slate-500 dark:text-slate-400">Security Deposit</dt>
-              <dd className="flex items-center gap-1.5 font-medium text-slate-900 dark:text-white">
-                ₹{tenant.depositAmount.toLocaleString("en-IN")}
-                <Badge
-                  tone={
-                    tenant.depositStatus === "paid"
-                      ? "green"
-                      : tenant.depositStatus === "partial"
-                      ? "amber"
-                      : "red"
-                  }
-                >
-                  {tenant.depositStatus}
-                </Badge>
-              </dd>
-            </div>
-            <div className="flex items-center justify-between">
-              <dt className="text-slate-500 dark:text-slate-400">Lease End Date</dt>
-              <dd className="flex items-center gap-1.5 font-medium text-slate-900 dark:text-white">
-                <CalendarDays size={13} />
-                {new Date(tenant.leaseEnd).toLocaleDateString("en-IN", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}
-              </dd>
-            </div>
-          </dl>
-        </Card>
+      {/* Profile & Quick Info */}
+      <div className="grid gap-6 mb-8 lg:grid-cols-3">
+        <div className="lg:col-span-1">
+          <ProfileCard
+            tenant={tenant}
+            propertyName={property.name}
+            unitNumber={unitNumber}
+          />
+        </div>
+        <div className="lg:col-span-2">
+          <PaymentStatus tenant={tenant} onPayClick={() => setPayOpen(true)} />
+        </div>
+      </div>
 
-        {/* Rent Payment Widget */}
-        <Card className="p-5">
-          <h3 className="mb-4 font-semibold text-slate-900 dark:text-white">
-            Rent Payment
-          </h3>
-          <div className="flex items-center justify-between rounded-xl bg-slate-50 p-4 dark:bg-slate-800/60">
-            <div>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Due on</p>
-              <p className="font-semibold text-slate-900 dark:text-white">
-                {new Date(tenant.rentDueDate).toLocaleDateString("en-IN", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}
-              </p>
-            </div>
-            <div className="text-right">
-              <p className="text-xs text-slate-500 dark:text-slate-400">Amount</p>
-              <p className="flex items-center justify-end gap-1 font-semibold text-slate-900 dark:text-white">
-                <IndianRupee size={14} />
-                {tenant.rentAmount.toLocaleString("en-IN")}
-              </p>
-            </div>
-          </div>
-          <div className="mt-4 flex items-center justify-between">
-            <Badge
-              tone={
-                tenant.rentStatus === "paid"
-                  ? "green"
-                  : tenant.rentStatus === "pending"
-                  ? "amber"
-                  : "red"
-              }
-            >
-              {tenant.rentStatus === "paid" && <CheckCircle2 size={12} />}
-              {tenant.rentStatus === "overdue" && <AlertTriangle size={12} />}
-              {tenant.rentStatus.charAt(0).toUpperCase() + tenant.rentStatus.slice(1)}
-            </Badge>
-            {tenant.rentStatus !== "paid" && (
-              <button
-                onClick={() => setPayOpen(true)}
-                className="flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90"
-              >
-                <Wallet size={14} /> Pay Rent / Upload Receipt
-              </button>
-            )}
-          </div>
-          {tenant.rentStatus === "paid" && (
-            <p className="mt-4 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-              <ReceiptText size={13} /> You&apos;re all caught up for this cycle.
-            </p>
-          )}
-        </Card>
+      {/* Amenities Grid */}
+      <div className="grid gap-6 mb-8 sm:grid-cols-2">
+        <MealPlanner />
+        <WiFiViewer />
       </div>
 
       {/* Maintenance Desk */}

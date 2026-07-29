@@ -12,6 +12,9 @@ import {
 } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { Badge, Card, SectionHeading, StatCard } from "@/components/ui";
+import AmenityManager from "@/components/admin/AmenityManager";
+import OccupancyTracker from "@/components/admin/OccupancyTracker";
+import RentCollectionMetrics from "@/components/admin/RentCollectionMetrics";
 
 export default function AdminOverview() {
   const { properties, units, tenants, tickets, inquiries } = useApp();
@@ -131,6 +134,24 @@ export default function AdminOverview() {
           {vacant} unit{vacant === 1 ? "" : "s"} currently vacant across your live properties.
         </div>
       )}
+
+      {/* Occupancy Tracker */}
+      <div className="mt-8">
+        <SectionHeading title="Occupancy Overview" subtitle="Real-time bed availability and occupancy rates" />
+        <OccupancyTracker />
+      </div>
+
+      {/* Rent Collection */}
+      <div className="mt-8">
+        <SectionHeading title="Rent Collection" subtitle="Track payment status and collection metrics" />
+        <RentCollectionMetrics />
+      </div>
+
+      {/* Amenity Manager */}
+      <div className="mt-8">
+        <SectionHeading title="Amenity Manager" subtitle="Configure and manage property amenities" />
+        <AmenityManager />
+      </div>
     </div>
   );
 }
