@@ -14,7 +14,7 @@ export const PROPERTIES: Property[] = [
     id: "felix-64",
     slug: "felix-64",
     name: "Felix 64",
-    tagline: "Fully Furnished 1BHK Apartments",
+    tagline: "Premium Co-Living Apartments",
     address: "4th Cross Rd, Tavarekere, Ramappa Layout, BTM 1st Stage",
     city: "Bengaluru",
     pincode: "560029",
@@ -22,14 +22,18 @@ export const PROPERTIES: Property[] = [
     rating: 4.6,
     reviewCount: 38,
     unitType: "1BHK",
-    totalUnits: 12,
+    totalUnits: 62,
+    totalFloors: 6,
+    buildingType: "co-living",
     amenities: [
-      "High-speed Wi-Fi",
-      "Fully Furnished",
+      "Secure Parking",
       "24/7 Security",
+      "Lift/Elevator",
+      "Laundry Service",
+      "Fully Furnished",
       "Power Backup",
-      "Housekeeping",
-      "Two-Wheeler Parking",
+      "Balcony",
+      "Common Area",
     ],
     gradient: "from-orange-500 via-rose-500 to-pink-600",
     status: "live",
@@ -71,13 +75,27 @@ const tenantNames = [
   "Meera Krishnan",
 ];
 
-const floors = [1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4];
-const vacantUnitNumbers = new Set(["203", "402"]);
+// Generate 62 units: ~10-11 units per floor across 6 floors
+const vacantUnitNumbers = new Set(["301", "302", "502", "601"]);
+const apartmentTypes: Array<"1BHK" | "1RK" | "Studio" | "2BHK"> = [
+  "1BHK",
+  "1RK",
+  "Studio",
+  "1BHK",
+  "1RK",
+];
 
-export const UNITS: Unit[] = floors.map((floor, idx) => {
-  const seatOnFloor = (idx % 3) + 1;
-  const unitNumber = `${floor}0${seatOnFloor}`;
+export const UNITS: Unit[] = Array.from({ length: 62 }, (_, idx) => {
+  const floor = Math.floor(idx / 11) + 1;
+  const unitOnFloor = (idx % 11) + 1;
+  const unitNumber = `${floor}0${String(unitOnFloor).padStart(2, "0")}`.replace(
+    /(.)\1$/,
+    "$1"
+  );
   const isVacant = vacantUnitNumbers.has(unitNumber);
+  const apartmentType = apartmentTypes[idx % apartmentTypes.length];
+  const baseRent = apartmentType === "2BHK" ? 35000 : apartmentType === "1BHK" ? 25000 : 18000;
+
   return {
     id: `felix64-${unitNumber}`,
     propertyId: "felix-64",
@@ -85,7 +103,11 @@ export const UNITS: Unit[] = floors.map((floor, idx) => {
     floor,
     status: isVacant ? "vacant" : "occupied",
     tenantId: isVacant ? undefined : `tenant-${unitNumber}`,
-    rent: 15500 + (idx % 4) * 1000,
+    rent: baseRent + (floor - 1) * 2000,
+    apartmentType,
+    hasBalcony: apartmentType !== "Studio",
+    securityDeposit: baseRent,
+    furnishingType: "Fully Furnished",
   };
 });
 
@@ -104,29 +126,36 @@ const rentStatuses: Array<"paid" | "pending" | "overdue"> = [
   "paid",
 ];
 
-export const TENANTS: Tenant[] = occupiedUnits.map((unit, idx) => ({
-  id: `tenant-${unit.unitNumber}`,
-  propertyId: "felix-64",
-  unitId: unit.id,
-  name: tenantNames[idx % tenantNames.length],
-  phone: `+91 98${(40000000 + idx * 137).toString().slice(0, 6)}`,
-  email: `${tenantNames[idx % tenantNames.length]
-    .toLowerCase()
-    .replace(/\s+/g, ".")}@example.com`,
-  leaseStart: "2025-04-01",
-  leaseEnd: "2026-03-31",
-  rentAmount: unit.rent,
-  depositAmount: unit.rent * 2,
-  depositStatus: idx === 8 ? "partial" : "paid",
-  rentStatus: rentStatuses[idx],
-  rentDueDate: "2026-08-05",
-  emergencyContactName:
-    idx % 2 === 0 ? "Ramesh (Father)" : "Lakshmi (Mother)",
-  emergencyContactPhone: `+91 90${(11000000 + idx * 219).toString().slice(0, 6)}`,
-  idProofType: idx % 2 === 0 ? "Aadhaar Card" : "Passport",
-  idProofUploaded: true,
-  leaseAgreementUploaded: idx !== 9,
-}));
+export const TENANTS: Tenant[] = occupiedUnits.map((unit, idx) => {
+  const occupationType = idx % 2 === 0 ? "Working Professional" : "Student";
+  return {
+    id: `tenant-${unit.unitNumber}`,
+    propertyId: "felix-64",
+    unitId: unit.id,
+    name: tenantNames[idx % tenantNames.length],
+    phone: `+91 98${(40000000 + idx * 137).toString().slice(0, 6)}`,
+    email: `${tenantNames[idx % tenantNames.length]
+      .toLowerCase()
+      .replace(/\s+/g, ".")}@example.com`,
+    leaseStart: "2025-04-01",
+    leaseEnd: "2026-03-31",
+    rentAmount: unit.rent,
+    depositAmount: unit.rent,
+    depositStatus: idx === 8 ? "partial" : "paid",
+    rentStatus: rentStatuses[idx],
+    rentDueDate: "2026-08-05",
+    emergencyContactName:
+      idx % 2 === 0 ? "Ramesh (Father)" : "Lakshmi (Mother)",
+    emergencyContactPhone: `+91 90${(11000000 + idx * 219).toString().slice(0, 6)}`,
+    idProofType: idx % 2 === 0 ? "Aadhaar Card" : "Passport",
+    idProofUploaded: true,
+    leaseAgreementUploaded: idx !== 9,
+    occupationType,
+    employerName: occupationType === "Working Professional" ? "Tech Corp India" : undefined,
+    collegeUniversity: occupationType === "Student" ? "IIT Bangalore" : undefined,
+    moveInDate: "2025-04-01",
+  };
+});
 
 export const CURRENT_TENANT_ID = TENANTS[0].id;
 

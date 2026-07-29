@@ -6,8 +6,8 @@ import { GradientButton } from "@/components/ui";
 
 export interface SearchFilters {
   city: string;
-  gender: string;
-  occupancy: string;
+  apartmentType: string;
+  priceRange: string;
 }
 
 interface HeroSearchProps {
@@ -23,8 +23,8 @@ const CITIES = [
   "Whitefield",
 ];
 
-const GENDERS = ["Gents", "Ladies", "Unisex"];
-const OCCUPANCY = ["Single", "Double", "Triple Sharing"];
+const APARTMENT_TYPES = ["1RK", "Studio", "1BHK", "2BHK"];
+const PRICE_RANGES = ["Under ₹20K", "₹20K - ₹30K", "₹30K - ₹40K", "₹40K+"];
 
 export default function HeroSearch({
   onSearch,
@@ -32,8 +32,8 @@ export default function HeroSearch({
 }: HeroSearchProps) {
   const [filters, setFilters] = useState<SearchFilters>({
     city: "",
-    gender: "",
-    occupancy: "",
+    apartmentType: "",
+    priceRange: "",
   });
   const [isSticky, setIsSticky] = useState(false);
 
@@ -91,43 +91,43 @@ export default function HeroSearch({
                     </select>
                   </div>
 
-                  {/* Gender Filter */}
+                  {/* Apartment Type Filter */}
                   <div className="flex-1 flex flex-col gap-1">
                     <label className="text-xs font-semibold text-slate-600">
-                      <Users size={14} className="inline mr-1" /> Gender
+                      <Home size={14} className="inline mr-1" /> Apartment Type
                     </label>
                     <select
-                      value={filters.gender}
+                      value={filters.apartmentType}
                       onChange={(e) =>
-                        setFilters({ ...filters, gender: e.target.value })
+                        setFilters({ ...filters, apartmentType: e.target.value })
                       }
                       className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 focus:border-rose-900 focus:ring-2 focus:ring-rose-900/20 focus:outline-none"
                     >
-                      <option value="">All Genders</option>
-                      {GENDERS.map((gender) => (
-                        <option key={gender} value={gender}>
-                          {gender}
+                      <option value="">All Types</option>
+                      {APARTMENT_TYPES.map((type) => (
+                        <option key={type} value={type}>
+                          {type}
                         </option>
                       ))}
                     </select>
                   </div>
 
-                  {/* Occupancy Filter */}
+                  {/* Price Range Filter */}
                   <div className="flex-1 flex flex-col gap-1">
                     <label className="text-xs font-semibold text-slate-600">
-                      <Home size={14} className="inline mr-1" /> Occupancy
+                      <span className="inline mr-1">₹</span> Price Range
                     </label>
                     <select
-                      value={filters.occupancy}
+                      value={filters.priceRange}
                       onChange={(e) =>
-                        setFilters({ ...filters, occupancy: e.target.value })
+                        setFilters({ ...filters, priceRange: e.target.value })
                       }
                       className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 focus:border-rose-900 focus:ring-2 focus:ring-rose-900/20 focus:outline-none"
                     >
-                      <option value="">All Types</option>
-                      {OCCUPANCY.map((type) => (
-                        <option key={type} value={type}>
-                          {type}
+                      <option value="">All Prices</option>
+                      {PRICE_RANGES.map((range) => (
+                        <option key={range} value={range}>
+                          {range}
                         </option>
                       ))}
                     </select>
@@ -183,32 +183,32 @@ export default function HeroSearch({
               </div>
               <div className="flex-1">
                 <select
-                  value={filters.gender}
+                  value={filters.apartmentType}
                   onChange={(e) =>
-                    setFilters({ ...filters, gender: e.target.value })
+                    setFilters({ ...filters, apartmentType: e.target.value })
                   }
                   className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-rose-900 focus:outline-none"
                 >
-                  <option value="">All Genders</option>
-                  {GENDERS.map((gender) => (
-                    <option key={gender} value={gender}>
-                      {gender}
+                  <option value="">All Types</option>
+                  {APARTMENT_TYPES.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
                     </option>
                   ))}
                 </select>
               </div>
               <div className="flex-1">
                 <select
-                  value={filters.occupancy}
+                  value={filters.priceRange}
                   onChange={(e) =>
-                    setFilters({ ...filters, occupancy: e.target.value })
+                    setFilters({ ...filters, priceRange: e.target.value })
                   }
                   className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-rose-900 focus:outline-none"
                 >
-                  <option value="">All Types</option>
-                  {OCCUPANCY.map((type) => (
-                    <option key={type} value={type}>
-                      {type}
+                  <option value="">All Prices</option>
+                  {PRICE_RANGES.map((range) => (
+                    <option key={range} value={range}>
+                      {range}
                     </option>
                   ))}
                 </select>
